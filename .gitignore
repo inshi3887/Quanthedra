@@ -1,0 +1,158 @@
+# ============================================
+# QuantDinger - Open Source Repository
+# ============================================
+
+# ========================
+# Frontend
+# ========================
+# Frontend source lives in the private QuantDinger-Vue repo. The published
+# `ghcr.io/<owner>/quantdinger-frontend` image is consumed via docker-compose
+# by default. For local source iteration, clone QuantDinger-Vue into the
+# `/QuantDinger-Vue/` slot below and run `docker compose up --build`; that
+# path is referenced by docker-compose.yml's frontend `build.context`
+# directive. Nothing under these paths should ever be committed here.
+/quantdinger_vue/
+/QuantDinger-Vue-src/
+/QuantDinger-Vue/
+/frontend/
+
+# ========================
+# Environment & Secrets
+# ========================
+.env
+.env.local
+.env.*
+!.env.example
+!**/.env.example
+backend.env
+backend_api_python/.env
+.codex-review/
+
+# ========================
+# IDE & OS
+# ========================
+.idea/
+.vscode/
+agent-tools/
+.cache/
+.codex/
+.codex-logs/
+.agents/
+.local_tools/
+outputs/
+.pytest_cache/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.iml
+
+# ========================
+# Python
+# ========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+/dist/
+build/
+*.egg
+.eggs/
+venv/
+.venv/
+env/
+backend_api_python/.test_deps/
+
+# ========================
+# Node (if any remain)
+# ========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# ========================
+# Logs & Runtime Data
+# ========================
+*.log
+pytest_out.txt
+*_out.txt
+_tmp_*.txt
+_i18n_*.txt
+backend_api_python/logs/
+backend_api_python/dist/
+
+# MCP server build artifacts (PyPI release output, never committed)
+mcp_server/dist/
+mcp_server/build/
+mcp_server/.smoketest/
+mcp_server/src/quantdinger_mcp.egg-info/
+backend_api_python/data/quantdinger.db
+backend_api_python/data/memory/
+
+# ========================
+# Docker
+# ========================
+docker-compose.override.yml
+
+# ============================================
+# QuantAnalyInvest merged additions (P0)
+# Sourced from daily_stock_analysis/.gitignore
+# ============================================
+
+# Environment & secrets (DSA) — all .env* variants ignored by default
+*.env
+*.env.local
+.env
+.env.*
+!.env.example
+!**/.env.example
+
+# P0A secret files (credential encryption keys, MFA material).
+backend_api_python/secrets/
+**/secrets/*.key
+backend_api_python/secrets/credential_key
+*.env.local
+.env.*.local
+
+# Local review / routing config (DSA)
+/.tmp
+/review.md
+/litellm_config.yaml
+/litellm_config.*.yaml
+/.llm_usage_hmac_secret
+**/.llm_usage_hmac_secret
+
+# Local temp test scripts (DSA)
+/test_*.py
+/test.sh
+
+# Data & LLM usage (DSA)
+/data/
+logs/
+
+# Python build artifacts (DSA)
+*.so
+.Python
+develop-eggs/
+downloads/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+ENV/
+
+# SQLite / local databases (P0 task 3)
+*.sqlite
+*.sqlite3
+backend_api_python/data/*.db
+*.db
