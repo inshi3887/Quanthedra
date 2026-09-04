@@ -1,4 +1,4 @@
-# QuantAnalyInvest Baseline
+# Quanthedra Baseline
 
 > Created by P0 on 2026-08-18. This file is the single source of truth for the
 > controlled repository baseline.

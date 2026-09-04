@@ -1,4 +1,4 @@
-# QuantAnalyInvest
+# Quanthedra
 
 > Unified quant platform merging **QuantDinger** (trading/account/strategy/risk/order base)
 > with **daily_stock_analysis** (multi-market research capabilities).

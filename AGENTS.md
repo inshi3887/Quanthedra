@@ -1,8 +1,8 @@
-# QuantAnalyInvest Agent Rules
+# Quanthedra Agent Rules
 
 ## Repository positioning
 
-QuantAnalyInvest is the unified repository for merging:
+Quanthedra (formerly QuantAnalyInvest) is the unified repository for merging:
 
 - **QuantDinger (QD)** — runtime, account, strategy, risk-control, order,
   deployment and permission base. The full QD tree is this repository's

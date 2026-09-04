@@ -160,3 +160,10 @@
 ### G0A 状态
 
 **代码与本地/Docker 验收完成。** 剩余：真实凭据「保存→重启→解密」演练（需 G0A 批准后的环境与真实凭据）、commit 后 gitleaks git/CodeQL。在 G0A 正式通过前不保存任何真实券商凭据、不开始 P18 live。
+
+## 第八轮：项目更名 Quanthedra（2026-09-04）
+
+- [x] 仓库整体搬迁至 `Quanthedra/`（同盘 mv，commit `b7b2168` 与全部内容原样保留）。
+- [x] remote 更新为 `https://github.com/inshi3887/Quanthedra.git`；原 QuantAnalyInvest 远程弃用（未推送过，保持空仓库）。
+- [x] 显示层更名（README / AGENTS / BASELINE 标题）+ `docs/adr/P0A-002-repository-renamed-quanthedra.md`；历史审计记录按时间戳证据原则不回溯改写。
+- [x] 内部兼容标识按 D-004 全部保留：`backend_api_python/`、`qd_` 表前缀、`quantdinger-*` 容器名、Celery task 名、`quantdinger_mcp` 包名。
