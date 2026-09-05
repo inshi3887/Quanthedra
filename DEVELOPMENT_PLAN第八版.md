@@ -1,17 +1,10 @@
-# QuantAnalyInvest 开发计划（第八版）
+# Quanthedra 开发计划（第八版）
 
 > 状态：修订后待批准执行  
 > 版本：0.8  
 > 日期：2026-08-14  
-> 上游架构契约：[MERGE_DESIGN.md](../MERGE_DESIGN.md)  
-> 第一版：[DEVELOPMENT_PLAN.md](./DEVELOPMENT_PLAN.md)  
-> 第二版：[DEVELOPMENT_PLAN第二版.md](./DEVELOPMENT_PLAN第二版.md)  
-> 第三版：[DEVELOPMENT_PLAN第三版.md](./DEVELOPMENT_PLAN第三版.md)  
-> 第四版：[DEVELOPMENT_PLAN第四版.md](./DEVELOPMENT_PLAN第四版.md)  
-> 第五版：[DEVELOPMENT_PLAN第五版.md](./DEVELOPMENT_PLAN第五版.md)  
-> 第六版：[DEVELOPMENT_PLAN第六版.md](./DEVELOPMENT_PLAN第六版.md)  
-> 第七版：[DEVELOPMENT_PLAN第七版.md](./DEVELOPMENT_PLAN第七版.md)  
-> 目标仓库：`QuantAnalyInvest`
+> 第一版至第七版的演进脉络完整保留在下方「修订记录」（0.1–0.8）；历史版本文件不再随仓库分发。  
+> 目标仓库：`Quanthedra`
 
 ### 修订记录
 
