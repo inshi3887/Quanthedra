@@ -69,6 +69,17 @@ def init_database(*, strict_migrations: bool = False):
        before starting the backend, otherwise every worker exploded with
        ``relation does not exist``. We now apply it ourselves.
 
+    P1 additions:
+
+    3. **Dated migrations** (``migrations/dated/*.sql``) run through the
+       ordered runner with the ``qd_schema_migrations`` ledger and advisory
+       lock (see :mod:`app.utils.migration_runner`). Production
+       (``DEPLOYMENT_ENV=production``|``staging``) runs the runner strictly —
+       a pending or failing migration aborts boot; the deploy job
+       (``python -m app.commands.migrate``) is still the authoritative
+       pre-start step. Development keeps the legacy soft behaviour: a
+       failure logs a warning and startup continues.
+
     After the schema apply we ping every critical table with ``SELECT 1
     LIMIT 0``. This catches the *other* common deployment pitfall: the schema
     was created by ``postgres`` (superuser) but ``DATABASE_URL`` points to a
@@ -84,10 +95,37 @@ def init_database(*, strict_migrations: bool = False):
 
     if os.getenv('SKIP_AUTO_MIGRATE', '').lower() not in ('1', 'true', 'yes'):
         _apply_init_sql(logger, strict=strict_migrations)
+        _apply_dated_migrations(logger, strict=strict_migrations)
     else:
         logger.info("SKIP_AUTO_MIGRATE is set; not running init.sql on boot")
 
     _verify_table_access(logger)
+
+
+def _apply_dated_migrations(logger, *, strict: bool = False):
+    """Run the P1 dated-migration runner at boot.
+
+    In strict mode (migrate job, production/staging boot) any pending or
+    failing migration raises. In development the legacy soft behaviour
+    applies: log loudly, keep booting — a dev machine must not brick
+    because of an off-line migration.
+    """
+    from app.utils.migration_runner import MigrationError, run_dated_migrations
+
+    strict_boot = strict or os.getenv("DEPLOYMENT_ENV", "development").strip().lower() in (
+        "production",
+        "staging",
+    )
+    try:
+        report = run_dated_migrations()
+        if report["applied_now"]:
+            logger.info(
+                "Dated migrations applied at boot: %s", ", ".join(report["applied_now"])
+            )
+    except MigrationError as exc:
+        if strict_boot:
+            raise
+        logger.warning("Dated migration runner skipped (continuing): %s", exc)
 
 
 def _resolve_init_sql_path() -> Path:

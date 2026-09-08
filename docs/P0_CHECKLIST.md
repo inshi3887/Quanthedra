@@ -167,3 +167,24 @@
 - [x] remote 更新为 `https://github.com/inshi3887/Quanthedra.git`；原 QuantAnalyInvest 远程弃用（未推送过，保持空仓库）。
 - [x] 显示层更名（README / AGENTS / BASELINE 标题）+ `docs/adr/P0A-002-repository-renamed-quanthedra.md`；历史审计记录按时间戳证据原则不回溯改写。
 - [x] 内部兼容标识按 D-004 全部保留：`backend_api_python/`、`qd_` 表前缀、`quantdinger-*` 容器名、Celery task 名、`quantdinger_mcp` 包名。
+
+## 第九轮：P1 migration runner（2026-09-08，分支 p1-migration-runner-shi）
+
+### 交付
+
+- [x] **迁移目录**：11 个日期迁移移入 `backend_api_python/migrations/dated/`（git mv 保留历史）；今后所有建表/改表 DDL 统一放该目录，命名 `YYYYMMDD_<name>.sql`。
+- [x] **runner**（`app/utils/migration_runner.py`）：有序执行（version+name 排序）、每文件独立事务、`pg_advisory_lock` 防并发、`qd_schema_migrations(version,name,checksum,applied_at,duration_ms)` 台账、checksum 漂移 fail-closed、非法文件名/重复版本/缺文件报错；专用裸 psycopg2 连接（绕开应用 cursor 包装的 INSERT→RETURNING id 改写，该改写会破坏 INSERT 开头的多语句脚本）。
+- [x] **migrate 命令**：`init.sql → dated → access verification` 严格管线；`--check` 计划模式；`--baseline-stamp` 既有库接入（schema fingerprint 严格匹配，不匹配输出 reconciliation 差异清单并 exit 1，绝不静默盖章）。
+- [x] **fingerprint**（`app/utils/schema_fingerprint.py`）：extensions/enums/sequences/表(列/主键/FK/唯一/检查/索引/触发器)/函数全量 manifest；归一化 search_path 噪音（public./scratch 前缀、default 表达式）；ledger 表自身排除比较。
+- [x] **启动接线**：`init_database` 启动时跑 runner——production/staging 严格（pending/失败拒启），开发降级警告不阻塞。
+- [x] **测试**：9 个离线单测（发现/排序/非法名/重复/漂移/幽灵行）+ 6 个真实 PG 集成测试（`TEST_DATABASE_URL` 门控，离线 CI 自动跳过）：空库全链一次应用、幂等、三 runner 并发共 11 次（每迁移恰好一次）、checksum 漂移中止、失败迁移零台账且可恢复续跑、baseline 探测匹配/拒绝。
+
+### 验证
+
+- P1 测试 15 passed；全量回归 1425 passed + ruff/bandit/pip-audit 通过。
+- E2E：空库 `--check`（11 pending）→ 严格迁移 → 幂等重跑 → `--baseline-stamp` 匹配盖章（参考指纹 5fe7a2e4…）；漂移库拒绝（集成测试覆盖）。
+
+### 关键实现决策
+
+- runner 用裸 psycopg2 连接：应用 `PostgresCursor` 会对 INSERT 开头语句自动追加 `RETURNING id`（legacy lastrowid 兼容），会破坏多语句迁移脚本。
+- fingerprint 的 schema 感知：reference 在 scratch schema 构建，所有 catalog 查询按 schema 参数过滤（不依赖 search_path），scratch/public 前缀在语义折叠中消除。
