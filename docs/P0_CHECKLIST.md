@@ -188,3 +188,11 @@
 
 - runner 用裸 psycopg2 连接：应用 `PostgresCursor` 会对 INSERT 开头语句自动追加 `RETURNING id`（legacy lastrowid 兼容），会破坏多语句迁移脚本。
 - fingerprint 的 schema 感知：reference 在 scratch schema 构建，所有 catalog 查询按 schema 参数过滤（不依赖 search_path），scratch/public 前缀在语义折叠中消除。
+
+## 第十轮：P2 研究契约（2026-09-11，分支 p2-research-contracts-shi）
+
+- [x] `app/services/research/` 三模块（contracts / instrument_identity / action_mapping）——纯函数、零 IO、零依赖。
+- [x] 六市场标的身份全覆盖：US/CN/HK/JP/KR/TW；HK 三别名归一 `0700.HK`（≥4 位规则）；裸日韩台代码 fail closed（AMBIGUOUS）；不回退 Crypto/CN。
+- [x] 动作×持仓全矩阵：sell/reduce 空仓拒绝（绝不 open_short）；hold/watch/avoid/alert 永不产生交易候选；PositionState 结构性无 SHORT。
+- [x] ReasonCode 稳定机器码，显示文案分离。
+- [x] 测试 63 passed（14 正例 + 17 fail-closed + 24 矩阵 + 幂等/纯度）；全量回归通过。
